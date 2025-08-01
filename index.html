@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Te amo 💗💗</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: black;
+      height: 100vh;
+      width: 100vw;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .word {
+      position: absolute;
+      color: white;
+      font-size: clamp(16px, 5vw, 40px);
+      opacity: 0;
+      transform: scale(0.2);
+      animation: zoomIn 4s ease-out forwards;
+      white-space: nowrap;
+      text-shadow: 0 0 10px #fff, 0 0 20px #f0f, 0 0 30px #f0f;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    @keyframes zoomIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.2) translateZ(-1000px);
+      }
+      40% {
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.5) translateZ(0);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<script>
+  // 🎇 FONDO DE ESTRELLAS
+  const canvas = document.getElementById("stars");
+  const ctx = canvas.getContext("2d");
+
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  let stars = [];
+
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 200; i++) {
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.5,
+        alpha: Math.random(),
+        delta: Math.random() * 0.02
+      });
+    }
+  }
+
+  function drawStars() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "white";
+    for (let star of stars) {
+      ctx.globalAlpha = star.alpha;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2, false);
+      ctx.fill();
+      star.alpha += star.delta;
+      if (star.alpha <= 0 || star.alpha >= 1) {
+        star.delta *= -1;
+      }
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(drawStars);
+  }
+
+  window.addEventListener("resize", () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    initStars();
+  });
+
+  initStars();
+  drawStars();
+
+  // 💌 FRASES
+  const frases = [
+    "Te amo",
+    "Mi vida eres tú",
+    "Contigo soy feliz",
+    "Gracias por existir",
+    "Eres mi universo",
+    "Cada día te amo más",
+    "Eres lo mejor que me pasó",
+    "Tu sonrisa es mi sol",
+    "Eres la mejor novia del mundo"
+  ];
+
+  function crearFrase() {
+    const frase = document.createElement("div");
+    frase.classList.add("word");
+    frase.innerText = frases[Math.floor(Math.random() * frases.length)];
+    frase.style.visibility = "hidden"; // Ocultar mientras medimos
+
+    document.body.appendChild(frase);
+
+    // Medir dimensiones reales
+    const fraseWidth = frase.offsetWidth;
+    const fraseHeight = frase.offsetHeight;
+
+    const margen = 10;
+
+    // Asegurar que la frase no se salga de pantalla
+    const x = Math.random() * (window.innerWidth - fraseWidth - margen * 2) + margen;
+    const y = Math.random() * (window.innerHeight - fraseHeight - margen * 2) + margen;
+
+    frase.style.left = `${x}px`;
+    frase.style.top = `${y}px`;
+    frase.style.visibility = "visible"; // Mostrar cuando ya está ubicada
+
+    setTimeout(() => frase.remove(), 4000);
+  }
+
+  setInterval(crearFrase, 2000);
+</script>
+
+</body>
+</html>
